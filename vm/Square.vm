@@ -1,0 +1,73 @@
+function Square.new 0
+push constant 4
+call Memory.alloc 1
+pop pointer 0
+push constant 0
+pop this 0
+push constant 0
+pop this 1
+push constant 0
+pop this 2
+push constant 0
+pop this 3
+push pointer 0
+return
+function Square.dispose 0
+push argument 0
+pop pointer 0
+push pointer 0
+call Memory.deAlloc 1
+pop temp 0
+push constant 0
+return
+function Square.setMine 0
+push argument 0
+pop pointer 0
+push constant 0
+not
+pop this 0
+push constant 0
+return
+function Square.hasMine 0
+push argument 0
+pop pointer 0
+push this 0
+return
+function Square.setRevealed 0
+push argument 0
+pop pointer 0
+push constant 0
+not
+pop this 1
+push constant 0
+return
+function Square.getRevealed 0
+push argument 0
+pop pointer 0
+push this 1
+return
+function Square.toggleFlag 0
+push argument 0
+pop pointer 0
+push this 2
+not
+pop this 2
+push constant 0
+return
+function Square.getFlagged 0
+push argument 0
+pop pointer 0
+push this 2
+return
+function Square.setAdjacentMines 0
+push argument 0
+pop pointer 0
+push argument 1
+pop this 3
+push constant 0
+return
+function Square.getAdjacentMines 0
+push argument 0
+pop pointer 0
+push this 3
+return

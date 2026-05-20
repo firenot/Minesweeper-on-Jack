@@ -1,0 +1,31 @@
+class Square {
+    field boolean isMine;
+    field boolean isRevealed;
+    field boolean isFlagged;
+    field int adjacentMines;
+
+    constructor Square new() {
+        let isMine = false;
+        let isRevealed = false;
+        let isFlagged = false;
+        let adjacentMines = 0;
+        return this;
+    }
+
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    method void setMine() { let isMine = true; return; }
+    method boolean hasMine() { return isMine; }
+    
+    method void setRevealed() { let isRevealed = true; return; }
+    method boolean getRevealed() { return isRevealed; }
+    
+    method void toggleFlag() { let isFlagged = ~isFlagged; return; }
+    method boolean getFlagged() { return isFlagged; }
+
+    method void setAdjacentMines(int count) { let adjacentMines = count; return; }
+    method int getAdjacentMines() { return adjacentMines; }
+}

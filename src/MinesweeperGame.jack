@@ -1,0 +1,119 @@
+class MinesweeperGame {
+    field Board board;
+    field boolean exit;
+    field int cursorX, cursorY;
+    field int gameState;
+
+    constructor MinesweeperGame new() {
+        let board = Board.new(10, 10);
+        let exit = false;
+        let cursorX = 0;
+        let cursorY = 0;
+        let gameState = 0;
+        return this;
+    }
+
+    method void dispose() {
+        do board.dispose();
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    method void run() {
+        var char key;
+        var int seedCounter;
+
+        do Output.moveCursor(10, 20);
+        do Output.printString("Press ANY KEY to start...");
+        
+        let seedCounter = 0;
+        let key = 0;
+        while (key = 0) {
+            let key = Keyboard.keyPressed();
+            let seedCounter = seedCounter + 1;
+            if (seedCounter > 32767) { let seedCounter = 0; }
+        }
+        
+        do Random.setSeed(seedCounter);
+        do Screen.clearScreen();
+        
+        while (~(key = 0)) { let key = Keyboard.keyPressed(); }
+
+        do board.draw();
+        do board.deployMines(10);
+        do drawCursor();
+
+        while (~exit) {
+            while (key = 0) { let key = Keyboard.keyPressed(); }
+
+            if (key = 81)  { let exit = true; }
+
+            if (gameState = 0) {
+                if (key = 131) { do moveCursor(0, -1); } // Up
+                if (key = 133) { do moveCursor(0, 1); }  // Down
+                if (key = 130) { do moveCursor(-1, 0); } // Left
+                if (key = 132) { do moveCursor(1, 0); }  // Right
+                
+                if (key = 32)  { 
+                    let gameState = board.reveal(cursorX, cursorY); 
+                    do drawCursor(); 
+                    do checkEndState();
+                } 
+                if (key = 70)  { 
+                    do board.toggleFlag(cursorX, cursorY); 
+                    do drawCursor(); 
+                }
+            }
+
+            while (~(key = 0)) { let key = Keyboard.keyPressed(); }
+        }
+        return;
+    }
+
+    method void moveCursor(int dx, int dy) {
+        do eraseCursor();
+        let cursorX = cursorX + dx;
+        let cursorY = cursorY + dy;
+        if (cursorX < 0) { let cursorX = 0; }
+        if (cursorX > 9) { let cursorX = 9; }
+        if (cursorY < 0) { let cursorY = 0; }
+        if (cursorY > 9) { let cursorY = 9; }
+        do drawCursor();
+        return;
+    }
+
+    method void drawCursor() {
+        var int px, py;
+        let px = 10 + (cursorX * 16);
+        let py = 10 + (cursorY * 16);
+        
+        do Screen.setColor(true); 
+        
+        do Screen.drawLine(px + 1, py + 1, px + 15, py + 1);   // Верх
+        do Screen.drawLine(px + 1, py + 15, px + 15, py + 15); // Низ
+        do Screen.drawLine(px + 1, py + 1, px + 1, py + 15);   // Лево
+        do Screen.drawLine(px + 15, py + 1, px + 15, py + 15); // Право
+        return;
+    }
+
+    method void eraseCursor() {
+        do board.drawCell(cursorX, cursorY);
+        return;
+    }
+
+    method void checkEndState() {
+        if (gameState = 1) {
+            do board.drawCell(cursorX, cursorY);
+            
+            do Output.moveCursor(12, 30); do Output.printString("                  ");
+            do Output.moveCursor(12, 30); do Output.printString("VICTORY! YOU WIN!");
+        }
+        if (gameState = 2) {
+            do board.drawCell(cursorX, cursorY);
+            
+            do Output.moveCursor(12, 30); do Output.printString("                  ");
+            do Output.moveCursor(12, 30); do Output.printString("GAME OVER!");
+        }
+        return;
+    }
+}
