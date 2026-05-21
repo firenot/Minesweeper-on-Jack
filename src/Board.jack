@@ -154,6 +154,28 @@ class Board {
         return;
     }
 
+    method boolean checkWin() {
+        var int x, y;
+        var Array column;
+        var Square sq;
+
+        let x = 0;
+        while (x < cols) {
+            let y = 0;
+            while (y < rows) {
+                let column = grid[x];
+                let sq = column[y];
+                
+                if ((~sq.hasMine()) & (~sq.getRevealed())) {
+                    return false;
+                }
+                let y = y + 1;
+            }
+            let x = x + 1;
+        }
+        return true;
+    }
+
     method int reveal(int cx, int cy) {
         var Array column; var Square sq; var int count;
         if (cx < 0) { return 0; } if (cx > (cols - 1)) { return 0; }
@@ -167,13 +189,7 @@ class Board {
         do drawCell(cx, cy);
 
         if (sq.hasMine()) {
-            return 2;
-        }
-
-        let safeCellsRemaining = safeCellsRemaining - 1;
-        
-        if (safeCellsRemaining = 0) {
-            return 1;
+            return 2; 
         }
 
         let count = sq.getAdjacentMines();
@@ -182,7 +198,9 @@ class Board {
             do reveal(cx - 1, cy);                            do reveal(cx + 1, cy);
             do reveal(cx - 1, cy + 1); do reveal(cx, cy + 1); do reveal(cx + 1, cy + 1);
         }
-        
+        if (checkWin()) {
+            return 1;
+        }
         return 0;
     }
 
